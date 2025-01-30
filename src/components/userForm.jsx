@@ -152,7 +152,7 @@ const UserForm = () => {
                     <div className="">
                         <h3 className="text-center mb-4 text-primary fw-bold">Quiz Start</h3>
                         <div className="text-center mb-3">
-                            <h6 className="fw-semibold text-muted">Question 1 of {questionData.length}</h6>
+                            <h6 className="fw-semibold text-muted">Question {currentQuestion+1} of {questionData.length}</h6>
                         </div>
 
                         <h5 className="fw-bold mb-3">{questionData[currentQuestion].question}</h5>
