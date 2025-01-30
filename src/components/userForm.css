@@ -1,0 +1,34 @@
+.userformsection {
+  display: flex;
+  width: 500px;
+  height: 100vh;
+  justify-content: center;
+  align-items: center;
+  margin: auto;
+}
+.correct-answer {
+  background-color: #d4edda !important; /* Light green */
+  border-color: #155724 !important;
+  color: #155724 !important;
+}
+
+.wrong-answer {
+  background-color: #f8d7da !important; /* Light red */
+  border-color: #721c24 !important;
+  color: #721c24 !important;
+}
+
+/* App logo animation */
+@keyframes spin-slow {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Slower spinning for the logo */
+.animate-spin {
+  animation: spin-slow 4s linear infinite;
+}
