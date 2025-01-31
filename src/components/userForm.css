@@ -30,5 +30,8 @@
 
 /* Slower spinning for the logo */
 .animate-spin {
+  line-height: 25px;
   animation: spin-slow 4s linear infinite;
+  width: 25px;
+  height: 25px;
 }

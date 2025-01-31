@@ -4,6 +4,11 @@ import "./userForm.css";
 import questionData from "./quiz_questions";
 import logo from "../assets/react.svg";
 
+import { motion } from "framer-motion";
+import confetti from "canvas-confetti";
+
+
+
 const UserForm = () => {
 
     const [step,setStep] = useState(1);
@@ -20,6 +25,23 @@ const UserForm = () => {
 
     //const [lockAnswer,setLockAnswer] = useState(false);
 
+    const handleConfetti = () => {
+        confetti({
+          particleCount: 150,  // Number of confetti pieces
+          spread: 90,          // Spread out the confetti
+          origin: { y: 0.6 },  // Start from the top half of the screen
+        });
+      };
+
+      useEffect(() => {
+        if (step === 3 && correctCount > wrongCount ) {
+          handleConfetti();
+        }
+
+      }, [step]);
+
+
+
     useEffect(() => {
 
         const storedFirstName = localStorage.getItem("firstname");
@@ -29,7 +51,6 @@ const UserForm = () => {
         if (storedFirstName) setFirstName(storedFirstName);
         if (storedLastName) setLastName(storedLastName);
         if (storedEmail) setEmail(storedEmail);
-
     },[]);
 
     const handleUserInfo = (e) => {
@@ -56,6 +77,7 @@ const UserForm = () => {
 
             //alert("Quiz Completed!"); 
             setStep(3);
+            
           }
     }
 
@@ -67,10 +89,10 @@ const UserForm = () => {
 
         if(option === questionData[currentQuestion].answer){
             setIsCorrect(true);
-            setCorrectCount(correctCount+1);
+            setCorrectCount((prev) => prev + 1);
         }else{
             setIsCorrect(false);          
-            setWrongCount(wrongCount + 1);  
+            setWrongCount((prev) => prev + 1);  
         }
     } 
     
@@ -151,22 +173,40 @@ const UserForm = () => {
                 <>
                     <div className="">
                         <h3 className="text-center mb-4 text-primary fw-bold">Quiz Start</h3>
-                        <div className="text-center mb-3">
-                            <h6 className="fw-semibold text-muted">Question {currentQuestion+1} of {questionData.length}</h6>
+
+                        <div className="progress mb-3">
+                            <div
+                                className="progress-bar progress-bar-striped progress-bar-animated"
+                                role="progressbar"
+                                style={{ width: `${((currentQuestion + 1) / questionData.length) * 100}%` }}
+                            >
+                                {currentQuestion + 1} / {questionData.length}
+                            </div>
                         </div>
 
+
+                        {/* <div className="text-center mb-3">
+                            <h6 className="fw-semibold text-muted">Question {currentQuestion+1} of {questionData.length}</h6>
+                        </div> */}
+
+                        <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5 }}
+                        >
                         <h5 className="fw-bold mb-3">{questionData[currentQuestion].question}</h5>
+                        </motion.div>
 
                         <div className="list-group">
                             { questionData[currentQuestion].options.map( (option , index) => (
-                                <label key={index} className={`list-group-item list-group-item-action p-3 rounded mt-2 ${selectedAnswer === option ? (isCorrect?"correct-answer" : "wrong-answer") : "" }` }>
-                                    <input type="radio" name="quizOption" className="form-check-input me-2" value="option one" onChange={()=>handleAnswerSelection(option)} checked={selectedAnswer === option} disabled={ selectedAnswer !== null} /> {option}
+                                <label key={index} className={`border list-group-item-action p-3 rounded mt-2 ${selectedAnswer === option ? (isCorrect?"correct-answer" : "wrong-answer") : "" }` }>
+                                    <input type="radio" name="quizOption" className="me-2" value="option one" onChange={()=>handleAnswerSelection(option)} checked={selectedAnswer === option}  /> {option}
                                 </label>
                             ) )}
                         </div>
                         
                         <div className="text-end">
-                            <button id="next-button" className="btn btn-primary mt-3" onClick={handleNextQuestion}>
+                            <button id="next-button" className="btn btn-primary mt-3" onClick={handleNextQuestion} disabled={ selectedAnswer ===  null}>
                                 { currentQuestion < questionData.length - 1 ? "Next" : "Finish Quiz" }
                             </button>
                         </div>
@@ -200,7 +240,7 @@ const UserForm = () => {
                         </div>
                     </div>
                     <button onClick={handleRestartQuiz} className="btn btn-primary w-100 fw-bold">
-                        <img src={logo} alt="Logo" className="w-15 h-15 animate-spin" /> Restart Quiz
+                        <img src={logo} alt="Logo" className="animate-spin" /> Restart Quiz
                     </button>
                 </>
             )
